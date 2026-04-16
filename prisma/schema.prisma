@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+  role Role @default(USER)
+
+  zoos Zoo[]
+  reviews Review[]
+
+  @@map("users")
+}
+
+model Zoo {
+  id Int @id @default(autoincrement())
+  name String 
+  location String
+  yearOpened Int @map("year_opened")
+  ownerId Int @map("owner_id")
+  
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  animals Animal[]
+  reviews Review[]
+
+  @@unique([name, location, ownerId])
+
+  @@map("zoos")
+}
+
+model Animal {
+  id Int @id @default(autoincrement())
+  species String
+  nickname String
+  zooId Int @map("zoo_id")
+
+  zoo Zoo @relation(fields: [zooId], references: [id], onDelete: Cascade)
+
+  @@unique([species, nickname, zooId])
+
+  @@map("animals")
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  rating Int
+  content String
+  authorId Int @map("author_id")
+  zooId Int @map("zoo_id")
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  zoo Zoo @relation(fields: [zooId], references: [id], onDelete: Cascade)
+
+  @@unique([authorId, zooId])
+
+  @@map("reviews")
+}
