@@ -1,0 +1,126 @@
+openapi: 3.1.0
+
+info:
+  title: Zoo API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local developement server
+
+tags:
+  - name: Zoos
+    description: Zoo-related endpoints
+  - name: Animals
+    description: Animal-related endpoints
+  - name: Reviews
+    description: Review-related endpoints
+  - name: Users
+    description: User-related endpoints
+  - name: Authentications
+    description: Authentication-related endpoints
+  - name: Monitoring
+    description: Operational endpoints, such as health check
+
+paths:
+  /health:
+    get:
+      summary: Health Check
+      description: Returns the status of the API. Used by Render to verify the API is operating.
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: API is running successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+components:
+  schemas:
+    Zoo:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Green Zoo'
+        location:
+          type: string
+          example: 'Charlotte, NC'
+        yearOpened:
+          type: integer
+          example: 2026
+        ownerId:
+          type: integer
+          example: 1
+    
+    Animal:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          example: 1
+        species:
+          type: string
+          example: 'Lion'
+        nickname:
+          type: string
+          example: 'Alex'
+        zooId:
+          type: integer
+          example: 1
+    
+    User:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: 'example@example.com'
+        password:
+          type: string
+          example: '$2b$10$TTA/FRNq9Z.tAIUfu2XgYOBk3L9r4JrN7x1vIrrrXoR4lPu1dPApW'
+        role:
+          $ref: '#/components/schemas/Role'
+          example: 'USER'
+    
+    Review:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          example: 1
+        rating:
+          type: integer
+          example: 4
+        content:
+          type: string
+          example: 'Green Zoo was a great time with the family, though the bathrooms were very dirty.'
+        authorId:
+          readOnly: true
+          type: integer
+          example: 1
+        zooId:
+          readOnly: true
+          type: integer
+          example: 1
+
+    Role:
+      type: string
+      enum:
+        - 'USER'
+        - 'ADMIN'
