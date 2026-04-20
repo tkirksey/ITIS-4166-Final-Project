@@ -4,6 +4,8 @@ import yaml from 'js-yaml';
 import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan'
 
+import authRouter from './routes/authRoutes.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -19,6 +21,8 @@ try {
 }
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+app.use('/auth', authRouter);
 
 app.get('/health', (req, res) => {
     res.status(200).json({status: 'ok'});
