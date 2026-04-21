@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan'
 
 import authRouter from './routes/authRoutes.js';
+import { rateLimiter } from './middleware/rateLimit.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,8 @@ try {
     console.log('Failed to load OpenAPI specs: ', error);
     process.exit(1);
 }
+
+app.use(rateLimiter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
