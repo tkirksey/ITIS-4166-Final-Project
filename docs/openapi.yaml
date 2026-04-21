@@ -9,6 +9,8 @@ servers:
     description: Local developement server
 
 tags:
+  - name: Authentications
+    description: Authentication-related endpoints
   - name: Zoos
     description: Zoo-related endpoints
   - name: Animals
@@ -17,8 +19,6 @@ tags:
     description: Review-related endpoints
   - name: Users
     description: User-related endpoints
-  - name: Authentications
-    description: Authentication-related endpoints
   - name: Monitoring
     description: Operational endpoints, such as health check
 
@@ -40,6 +40,84 @@ paths:
                   status:
                     type: string
                     example: ok
+  
+  /auth/signup:
+    post:
+      summary: Signup a user
+      description: Signup a user with the provided credentials
+      tags:
+        - Authentications
+      requestBody:
+        description: User signup credentials.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        '201':
+          description: User is signed up
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/InvalidUserInput'
+        '409':
+          description: Email is already in use by another user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example: 
+                  error: 'Email is already in use'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+        
+  /auth/login:
+    post:
+      summary: Login a user
+      description: Logs in a user with the provided credentials
+      tags:
+        - Authentications
+      requestBody:
+        description: User login credentials.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        '200':
+          description: User is logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  acessesToken:
+                    type: String
+                example:
+                  acessesToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NzY4MTQzMjgsImV4cCI6MTc3NjgxNzkyOH0.hLXMyd4Zp_uFzbxv5ZyMKQvr7q7ghNPZ-h0Id9saOBE'
+        '400':
+          $ref: '#/components/responses/InvalidUserInput'
+        '401':
+          description: Email or password is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: 'Invalid credentials'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
 
 components:
   schemas:
@@ -90,12 +168,10 @@ components:
         email:
           type: string
           example: 'example@example.com'
-        password:
-          type: string
-          example: '$2b$10$TTA/FRNq9Z.tAIUfu2XgYOBk3L9r4JrN7x1vIrrrXoR4lPu1dPApW'
         role:
           $ref: '#/components/schemas/Role'
           example: 'USER'
+          readOnly: true
     
     Review:
       type: object
@@ -124,3 +200,95 @@ components:
       enum:
         - 'USER'
         - 'ADMIN'
+    
+    AuthCredentials:
+      type: object
+      properties:
+        email:
+          type: string
+          example: 'example@example.com'
+        password:
+          type: string
+          example: 'password123'
+    
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example: 
+              error: 'Resource 1 not found'
+    
+    InvalidId:
+      description: Invalid ID
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+            example:
+              errors: ['ID must be a positive integer']
+
+    Unauthorized:
+      description: Client is not authenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Not authenticated. Please provide a valid token.'
+    
+    InvalidUserInput:
+      description: Bad request due to invalid data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+            example:
+              errors:
+                - "Field 'email' is missing"
+                - "Field 'password' is not a string"
+
+    NotPermitted:
+      description: Client is not authorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Forbidden: insufficient permission.'
+
+    RateLimitHit:
+      description: The client has tried to make too many connections and the rate limiter was hit
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Too many requests. Try again later'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
