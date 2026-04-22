@@ -1,7 +1,7 @@
 import express from "express";
 import { validateId, validateUserPost, validateUserUpdate } from "../middleware/userValidators.js";
 import { authenticate } from "../middleware/authenticate.js";
-import { authorizeRole } from "../middleware/authorizeRoles.js";
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { 
     createUserHandler, 
     deleteUserByIdHandler, 

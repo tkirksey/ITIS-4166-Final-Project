@@ -64,16 +64,7 @@ paths:
         '400':
           $ref: '#/components/responses/InvalidUserInput'
         '409':
-          description: Email is already in use by another user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                example: 
-                  error: 'Email is already in use'
+          $ref: '#/components/responses/EmailConflict'
         '429':
           $ref: '#/components/responses/RateLimitHit'
         
@@ -118,6 +109,186 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
+  /user:
+    get:
+      summary: Get all users
+      description: Gets all users. Administrators Only 
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    post:
+      summary: Create an user
+      description: Creates a user using the provided data. Administrators Only
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        description: Create user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          $ref: '#/components/responses/InvalidUserInput'
+        '409':
+          $ref: '#/components/responses/EmailConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+  /user/{id}:
+    get:
+      summary: Get User by Id
+      description: Get a user by it's Id. Administrators Only
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the user to get
+      responses:
+        '200':
+          description: Retrieved user successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/componenets/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    put:
+      summary: Update a User
+      description: Updates a user of a given id with the given data. Administrators Only
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the user to update
+      requestBody:
+        description: The data to update the user with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Updated user successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/componenets/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          description: Invalid Id or data provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  errors:
+                    - "Field 'email' is not an email"
+                    - "Field 'password' needs to be between 8-64 characters"
+                    - "Field 'role' must be either 'USER' or 'ADMIN'"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/EmailConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    delete:
+      summary: Delete User by Id
+      description: Delete a user by it's Id. Administrators Only
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the user to delete
+      responses:
+        '204':
+          description: Deleted user successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'User deleted successfully'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
 
 components:
   schemas:
@@ -168,6 +339,10 @@ components:
         email:
           type: string
           example: 'example@example.com'
+        password:
+          writeOnly: true
+          type: string
+          example: 'password123'
         role:
           $ref: '#/components/schemas/Role'
           example: 'USER'
@@ -286,6 +461,18 @@ components:
                 type: string
             example:
               error: 'Too many requests. Try again later'
+
+    EmailConflict:
+      description: Email already in use
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Conflict: Email is already in use'
 
   securitySchemes:
     bearerAuth:

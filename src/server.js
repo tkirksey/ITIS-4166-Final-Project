@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan'
 
 import authRouter from './routes/authRoutes.js';
+import userRouter from './routes/userRoutes.js';
 import { rateLimiter } from './middleware/rateLimit.js';
 
 const app = express();
@@ -25,7 +26,11 @@ app.use(rateLimiter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+// app.use('/api/zoo');
+// app.use('/api/animal');
+// app.use('/api/review');
 
 app.get('/health', (req, res) => {
     res.status(200).json({status: 'ok'});
