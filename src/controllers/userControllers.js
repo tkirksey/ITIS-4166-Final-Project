@@ -1,0 +1,31 @@
+import { createUser, deleteUserById, getAllUsers, getUserById, updateUser } from "../services/userServices.js";
+
+export async function deleteUserByIdHandler(req, res) {
+    const id = parseInt(req.param.id);
+    await deleteUserById(id);
+    res.status(204).json({ message: 'User deleted successfully' });
+}
+
+export async function getUserByIdHandler(req, res) {
+    const id = parseInt(req.param.id);
+    const user = await getUserById(id);
+    res.status(200).json(user);
+}
+
+export async function getAllUsersHandler(req, res) {
+    const users = await getAllUsers();
+    res.status(200).json(users);
+}
+
+export async function createUserHandler(req, res) {
+    const { email, password, role } = req.body;
+    const user = await createUser(email, password, role);
+    res.status(201).json(user);
+}
+
+export async function updateUserHandler(req, res) {
+    const id = parseInt(req.param.id);
+    const { email, password, role } = req.body;
+    const user = await updateUser(id, email, password, role);
+    res.status(200).json(user);
+}

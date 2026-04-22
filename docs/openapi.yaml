@@ -261,7 +261,7 @@ components:
             example:
               errors:
                 - "Field 'email' is missing"
-                - "Field 'password' is not a string"
+                - "Field 'password' is missing"
 
     NotPermitted:
       description: Client is not authorized
