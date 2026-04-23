@@ -31,5 +31,10 @@ export async function createUser(email, password, role) {
 export async function updateUser(id, email, password, role) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = await update(id, { email, password: hashedPassword, role });
+
+    if(!user){
+        throw NotFoundError;
+    }
+    
     return user;
 }

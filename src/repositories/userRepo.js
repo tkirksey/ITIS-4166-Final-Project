@@ -2,6 +2,9 @@ import prisma from '../config/db.js';
 import primsa from '../config/db.js';
 import NotFoundError from '../errors/NotFoundError.js';
 
+const ConflictError = new Error('Conflict: Email is already in use.');
+ConflictError.status = 409;
+
 export async function create(data) {
     try {
         const newUser = await primsa.user.create({
@@ -11,9 +14,7 @@ export async function create(data) {
         return newUser;
     } catch (error) {
         if(error.code === 'P2002'){
-            const err = new Error('Conflict: Email is already in use.');
-            err.status = 409;
-            throw err;
+            throw ConflictError;
         }
         throw error;
     }
@@ -82,12 +83,10 @@ export async function update(id, data) {
         return user;
     } catch (error) {
         if(error.code === 'P2025'){
-            throw NotFoundError;
+            return null;
         }
         if(error.code === 'P2002'){
-            const err = new Error('Conflict: Email is already in use.');
-            err.status = 409;
-            throw err;
+            throw ConflictError;
         }
         throw error
     }
