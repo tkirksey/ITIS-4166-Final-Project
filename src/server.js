@@ -30,7 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/zoo', zooRouter);
-// app.use('/api/animal');
+app.use('/api/animal');
 // app.use('/api/review');
 
 app.get('/health', (req, res) => {
