@@ -9,15 +9,15 @@ servers:
     description: Local developement server
 
 tags:
-  - name: Authentications
+  - name: Authentication
     description: Authentication-related endpoints
-  - name: Zoos
+  - name: Zoo
     description: Zoo-related endpoints
-  - name: Animals
+  - name: Animal
     description: Animal-related endpoints
-  - name: Reviews
+  - name: Review
     description: Review-related endpoints
-  - name: Users
+  - name: User
     description: User-related endpoints
   - name: Monitoring
     description: Operational endpoints, such as health check
@@ -41,12 +41,12 @@ paths:
                     type: string
                     example: ok
   
-  /auth/signup:
+  /api/auth/signup:
     post:
       summary: Signup a user
       description: Signup a user with the provided credentials
       tags:
-        - Authentications
+        - Authentication
       requestBody:
         description: User signup credentials.
         required: true
@@ -68,12 +68,12 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
         
-  /auth/login:
+  /api/auth/login:
     post:
       summary: Login a user
       description: Logs in a user with the provided credentials
       tags:
-        - Authentications
+        - Authentication
       requestBody:
         description: User login credentials.
         required: true
@@ -109,17 +109,17 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
-  /user:
+  /api/user:
     get:
-      summary: Get all users
-      description: Gets all users. Administrators Only 
+      summary: Get all user
+      description: Gets all user. Administrators Only 
       security:
         - bearerAuth: []
       tags:
-        - Users
+        - User
       responses:
         '200':
-          description: Users retrieved successfully
+          description: User retrieved successfully
           content:
             application/json:
               schema:
@@ -139,7 +139,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Users
+        - User
       requestBody:
         description: Create user data
         required: true
@@ -165,14 +165,14 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
-  /user/{id}:
+  /api/user/{id}:
     get:
       summary: Get User by Id
       description: Get a user by it's Id. Administrators Only
       security:
         - bearerAuth: []
       tags:
-        - Users
+        - User
       parameters:
         - in: path
           name: id
@@ -204,7 +204,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Users
+        - User
       parameters:
         - in: path
           name: id
@@ -259,7 +259,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Users
+        - User
       parameters:
         - in: path
           name: id
@@ -290,6 +290,166 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
+  /api/zoo:
+    get:
+      tags:
+        - Zoo
+      summary: Get all zoo
+      description: Retrieve all zoo data from the database
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zoo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    post:
+      tags:
+        - Zoo
+      security:
+        - bearerAuth: []
+      summary: Create a zoo
+      description: Create a zoo with provided JSON body
+      requestBody:
+        required: true
+        description: The data to create a zoo from
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zoo'
+      responses:
+        '201':
+          description: Zoo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zoo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidZooInput'
+        '409':
+          $ref: '#/components/responses/ZooConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+  /api/zoo/{id}:
+    get:
+      tags:
+        - Zoo
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the zoo to get  
+      summary: Get a zoo by Id
+      description: Retrieve a zoo based on the id provided
+      responses:
+        '200':
+          description: Zoo retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zoo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidZooInput'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    put:
+      tags:
+        - Zoo
+      security:
+        - bearerAuth: []
+      summary: Update a zoo by Id
+      description: Update the zoo with the given Id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the zoo to update
+      requestBody:
+        required: true
+        description: The data to update the zoo with
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zoo'
+      responses:
+        '200':
+          description: Zoo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zoo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidZooInput'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ZooConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    delete:
+      tags:
+        - Zoo
+      security:
+        - bearerAuth: []
+      summary: Delete a zoo by Id
+      description: Delete the zoo with the given Id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The Id of the zoo to update
+      responses:
+        '204':
+          description: Deleted zoo successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Zoo was successfully deleted.'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+      
+      
 components:
   schemas:
     Zoo:
@@ -438,6 +598,22 @@ components:
                 - "Field 'email' is missing"
                 - "Field 'password' is missing"
 
+    InvalidZooInput:
+      description: Bad request due to invalid data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+            example:
+              errors:
+                - "Field 'name' is missing"
+                - "Field 'location' is missing"
+
     NotPermitted:
       description: Client is not authorized
       content:
@@ -473,6 +649,18 @@ components:
                 type: string
             example:
               error: 'Conflict: Email is already in use'
+
+    ZooConflict:
+      description: Zoo creation/updating had conflicts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Conflict: owner already has a zoo with this name in this location'
 
   securitySchemes:
     bearerAuth:

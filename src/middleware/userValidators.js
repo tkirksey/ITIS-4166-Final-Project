@@ -7,7 +7,7 @@ export const validateId = [
     .trim()
     .escape()
     .isInt({min:1})
-    .withMessage("'id' must be a positive integer."),
+    .withMessage("Parameter 'id' must be a positive integer."),
 
     handleValidationErrors
 

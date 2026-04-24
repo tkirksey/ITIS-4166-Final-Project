@@ -1,4 +1,4 @@
-import { createZoo, deleteZoo, getAllZoos, getZooById, updateZoo } from "../services/zooServices";
+import { createZoo, deleteZoo, getAllZoos, getZooById, updateZoo } from "../services/zooServices.js";
 
 export async function getAllZoosHandler(req, res) {
     const zoos = await getAllZoos();
@@ -14,7 +14,12 @@ export async function getZooByIdHandler(req, res) {
 }
 
 export async function createZooHandler(req, res) {
-    const ownerId = req.user.id;
+    let ownerId = parseInt(req.user.id);
+
+    if(req.body.ownerId){
+        ownerId = parseInt(req.body.ownerId);
+    }
+
     const { name, location } = req.body;
     const yearOpened = parseInt(req.body.yearOpened);
 
