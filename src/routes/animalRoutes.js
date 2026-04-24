@@ -28,6 +28,6 @@ router.get('/', authenticate, getAllAnimalsHandler);
 router.get('/:id', authenticate, validateId, getAnimalByIdHandler);
 router.post('/', authenticate, validateCreateData, createAnimalHandler);
 router.put('/:id', authenticate, validateId, authorizeAnimalOwnership, validateUpdateData, updateAnimalHandler);
-router.delete('/:id', deleteAnimalHandler);
+router.delete('/:id', authenticate, validateId, authorizeAnimalOwnership, deleteAnimalHandler);
 
 export default router;
