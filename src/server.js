@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import zooRouter from './routes/zooRoutes.js';
+import animalRouter from './routes/animalRoutes.js';
 import { rateLimiter } from './middleware/rateLimit.js';
 
 const app = express();
@@ -30,7 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/zoo', zooRouter);
-app.use('/api/animal');
+app.use('/api/animal', animalRouter);
 // app.use('/api/review');
 
 app.get('/health', (req, res) => {
