@@ -3,6 +3,9 @@ import prisma from "../config/db.js";
 const ConflictError = new Error('Conflict: An animal with this nickname and species already exists at this zoo');
 ConflictError.status = 409;
 
+const ForeignKeyError = new Error('Bad Input: There is no zoo associated with the id provided');
+ForeignKeyError.status = 400;
+
 export async function getAll() {
     const animals = await prisma.animal.findMany();
     return animals;
@@ -27,6 +30,9 @@ export async function create(data) {
         if(error.code === 'P2002'){
             throw ConflictError;
         }
+        if(error.code === 'P2003'){
+            throw ForeignKeyError;
+        }
         throw error;
     }
 }
@@ -46,6 +52,9 @@ export async function update(id, data) {
         }
         if(error.code === 'P2025'){
             return null;
+        }
+        if(error.code === 'P2003'){
+            throw ForeignKeyError;
         }
         throw error;
     }

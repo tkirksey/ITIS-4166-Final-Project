@@ -4,6 +4,9 @@ import NotFoundError from "../errors/NotFoundError.js";
 const ConflictError = new Error('Conflict: owner already has a zoo with this name in this location');
 ConflictError.status = 409;
 
+const ForeignKeyError = new Error('Bad Input: There is no user associated with the id provided.');
+ForeignKeyError.status = 400;
+
 export async function getAll() {
     const zoos = await prisma.zoo.findMany();
     return zoos;
@@ -28,6 +31,9 @@ export async function create(data) {
         if(error.code === 'P2002'){
             throw ConflictError;
         }
+        if(error.code === 'P2003'){
+            throw ForeignKeyError;
+        }
         throw error;
     }
 }
@@ -47,6 +53,9 @@ export async function update(id, data) {
         }
         if(error.code === 'P2025'){
             return null;
+        }
+        if(error.code === 'P2003'){
+            throw ForeignKeyError;
         }
         throw error;
     }
