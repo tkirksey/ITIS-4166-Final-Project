@@ -13,7 +13,7 @@ export async function create(data) {
         });
         return newUser;
     } catch (error) {
-        if(error.code === 'P2002'){
+        if (error.code === 'P2002') {
             throw ConflictError;
         }
         throw error;
@@ -44,7 +44,7 @@ export async function getById(id) {
 export async function remove(id) {
     try {
         const user = await primsa.user.delete({
-            where:{
+            where: {
                 id: id
             },
             omit: {
@@ -53,7 +53,7 @@ export async function remove(id) {
         });
         return user;
     } catch (error) {
-        if(error.code === 'P2025'){
+        if (error.code === 'P2025') {
             return null;
         }
         throw error;
@@ -82,12 +82,71 @@ export async function update(id, data) {
         });
         return user;
     } catch (error) {
-        if(error.code === 'P2025'){
+        if (error.code === 'P2025') {
             return null;
         }
-        if(error.code === 'P2002'){
+        if (error.code === 'P2002') {
             throw ConflictError;
         }
         throw error
     }
+
+}
+
+export async function getUsersZoos(id) {
+
+    try {
+
+        const user = await primsa.user.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                zoos: true
+            }
+        });
+
+        const zoos = user.zoos.slice();
+
+        return zoos;
+
+    } catch (error) {
+
+        if (error.code === 'P2025') {
+            return null;
+        }
+
+        throw error;
+
+    }
+
+}
+
+export async function getUsersReviews(id) {
+
+    try {
+
+        const user = await primsa.user.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                reviews: true
+            }
+        });
+
+        const reviews = user.reviews.slice();
+
+        return reviews;
+
+    } catch (error) {
+
+        if (error.code === 'P2025') {
+            return null;
+        }
+
+        throw error;
+
+    }
+
 }

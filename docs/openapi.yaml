@@ -751,6 +751,76 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
+  /api/user/{id}/zoos/:
+    get:
+      tags:
+        - User
+        - Zoo
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the user
+      summary: Get zoos owned by a user 
+      description: Retrieve all zoos owned by a user with a given id
+      responses:
+        '200':
+          description: Successfully retrieved zoos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zoo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+  
+  /api/user/{id}/reviews:
+    get:
+      tags:
+        - User
+        - Review
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the user
+      summary: Get reviews written by a user 
+      description: Retrieve all reviews written by a user with a given id
+      responses:
+        '200':
+          description: Successfully retrieved reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+  
+
 components:
   schemas:
     Zoo:

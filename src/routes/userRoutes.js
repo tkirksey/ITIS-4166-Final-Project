@@ -6,7 +6,9 @@ import {
     createUserHandler, 
     deleteUserByIdHandler, 
     getAllUsersHandler, 
+    getReviewsAuthoredByUserHandler, 
     getUserByIdHandler, 
+    getZoosOwnedByUserHandler, 
     updateUserHandler
 } from "../controllers/userControllers.js";
 
@@ -17,5 +19,8 @@ router.get('/:id', authenticate, authorizeRoles('ADMIN'), validateId, getUserByI
 router.post('/', authenticate, authorizeRoles('ADMIN'), validateUserPost, createUserHandler);
 router.put('/:id', authenticate, authorizeRoles('ADMIN'), validateId, validateUserUpdate, updateUserHandler);
 router.delete('/:id', authenticate, authorizeRoles('ADMIN'), validateId, deleteUserByIdHandler);
+
+router.get('/:id/zoos', authenticate, validateId, getZoosOwnedByUserHandler);
+router.get('/:id/reviews', authenticate, validateId, getReviewsAuthoredByUserHandler);
 
 export default router;

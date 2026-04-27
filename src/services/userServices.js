@@ -1,5 +1,5 @@
 import NotFoundError from "../errors/NotFoundError.js";
-import { create, getAll, getById, remove, update } from "../repositories/userRepo.js";
+import { create, getAll, getById, getUsersReviews, getUsersZoos, remove, update } from "../repositories/userRepo.js";
 import bcrypt from "bcrypt";
 
 export async function getUserById(id) {
@@ -37,4 +37,28 @@ export async function updateUser(id, email, password, role) {
     }
     
     return user;
+}
+
+export async function getZoosOwnedByUser(id) {
+    
+    const zoos = await getUsersZoos(id);
+
+    if(!zoos){
+        throw NotFoundError;
+    }
+
+    return zoos;
+
+}
+
+export async function getReviewsAuthoredByUser(id) {
+    
+    const reveiws = await getUsersReviews(id);
+
+    if(!reveiws){
+        throw NotFoundError;
+    }
+
+    return reveiws;
+
 }

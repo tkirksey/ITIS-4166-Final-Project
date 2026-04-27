@@ -1,4 +1,4 @@
-import { createUser, deleteUserById, getAllUsers, getUserById, updateUser } from "../services/userServices.js";
+import { createUser, deleteUserById, getAllUsers, getReviewsAuthoredByUser, getUserById, getZoosOwnedByUser, updateUser } from "../services/userServices.js";
 
 export async function deleteUserByIdHandler(req, res) {
     const id = parseInt(req.params.id);
@@ -28,4 +28,16 @@ export async function updateUserHandler(req, res) {
     const { email, password, role } = req.body;
     const user = await updateUser(id, email, password, role);
     res.status(200).json(user);
+}
+
+export async function getZoosOwnedByUserHandler(req, res) {
+    const id = parseInt(req.params.id);
+    const zoos = await getZoosOwnedByUser(id);
+    res.status(200).json(zoos);
+}
+
+export async function getReviewsAuthoredByUserHandler(req, res) {
+    const id = parseInt(req.params.id);
+    const reviews = await getReviewsAuthoredByUser(id);
+    res.status(200).json(reviews);
 }
