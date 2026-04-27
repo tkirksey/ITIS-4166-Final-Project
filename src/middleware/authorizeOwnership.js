@@ -1,4 +1,5 @@
 import { getAnimalById } from "../services/animalServices.js";
+import { getReviewById } from "../services/reviewServices.js";
 import { getUserById } from "../services/userServices.js";
 import { getZooById } from "../services/zooServices.js";
 
@@ -38,6 +39,19 @@ export async function authorizeAnimalOwnership(req, res, next) {
     const zoo = await getZooById(animal.zooId);
 
     if(zoo.ownerId !== req.user.id && req.user.role !== 'ADMIN'){
+        return next(NotPermittedError);
+    }
+
+    next();
+
+}
+
+export async function authorizeReviewOwnership(req, res, next) {
+    
+    const id = parseInt(req.params.id);
+    const review = await getReviewById(id);
+
+    if(review.authorId !== req.user.id && req.user.role !== 'ADMIN'){
         return next(NotPermittedError);
     }
 

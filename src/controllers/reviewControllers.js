@@ -12,7 +12,7 @@ export async function getAllReviewsHandler(req, res) {
 }
 
 export async function getReviewByIdHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const review = await getReviewById(id);
     res.status(200).json(review);
 }
@@ -27,7 +27,7 @@ export async function createReviewHandler(req, res) {
 }
 
 export async function updateReviewHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
 
     let rating = undefined;
     if(req.body.rating){
@@ -52,7 +52,7 @@ export async function updateReviewHandler(req, res) {
 }
 
 export async function deleteReviewHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     await deleteReview(id);
     res.status(204).json({message:'Review was successfully deleted'});
 }

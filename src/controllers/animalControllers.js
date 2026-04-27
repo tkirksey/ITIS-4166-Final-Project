@@ -12,7 +12,7 @@ export async function getAllAnimalsHandler(req, res) {
 }
 
 export async function getAnimalByIdHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const animal = await getAnimalById(id);
     res.status(200).json(animal);
 }
@@ -25,7 +25,7 @@ export async function createAnimalHandler(req, res) {
 }
 
 export async function updateAnimalHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const { nickname, species } = req.body;
     
     let zooId = undefined;
@@ -39,7 +39,7 @@ export async function updateAnimalHandler(req, res) {
 }
 
 export async function deleteAnimalHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
 
     await deleteAnimal(id);
 

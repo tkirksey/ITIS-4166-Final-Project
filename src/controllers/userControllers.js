@@ -1,13 +1,13 @@
 import { createUser, deleteUserById, getAllUsers, getUserById, updateUser } from "../services/userServices.js";
 
 export async function deleteUserByIdHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     await deleteUserById(id);
     res.status(204).json({ message: 'User deleted successfully' });
 }
 
 export async function getUserByIdHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const user = await getUserById(id);
     res.status(200).json(user);
 }
@@ -24,7 +24,7 @@ export async function createUserHandler(req, res) {
 }
 
 export async function updateUserHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const { email, password, role } = req.body;
     const user = await updateUser(id, email, password, role);
     res.status(200).json(user);

@@ -7,7 +7,7 @@ export async function getAllZoosHandler(req, res) {
 }
 
 export async function getZooByIdHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const zoo = await getZooById();
 
     res.status(200).json(zoo);
@@ -29,7 +29,7 @@ export async function createZooHandler(req, res) {
 }
 
 export async function updateZooHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
     const { name, location } = req.body;
     
     let yearOpened;
@@ -52,7 +52,7 @@ export async function updateZooHandler(req, res) {
 }
 
 export async function deleteZooHandler(req, res) {
-    const id = parseInt(req.param.id);
+    const id = parseInt(req.params.id);
 
     await deleteZoo(id);
 
