@@ -76,3 +76,61 @@ export async function remove(id) {
         throw error;
     }
 }
+
+export async function getZoosAnimals(id) {
+    
+    try {
+
+        const zoo = await prisma.zoo.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                animals: true
+            }
+        });
+
+        const animals = zoo.animals.slice();
+
+        return animals;
+
+    } catch (error) {
+
+        if(error.code === 'P2025'){
+            return null;
+        }
+
+        throw error;
+
+    }
+ 
+}
+
+export async function getZoosReviews(id) {
+    
+    try {
+
+        const zoo = await prisma.zoo.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                reviews: true
+            }
+        });
+
+        const reviews = zoo.reviews.slice();
+
+        return reviews;
+
+    } catch (error) {
+
+        if(error.code === 'P2025'){
+            return null;
+        }
+
+        throw error;
+
+    }
+ 
+}

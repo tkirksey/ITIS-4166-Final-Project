@@ -819,7 +819,73 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
-  
+  /api/zoo/{id}/animals:
+    get:
+      tags:
+        - Zoo
+        - Animal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the zoo
+      summary: Get animals owned by a zoo 
+      description: Retrieve all animals owned by a zoo with a given id
+      responses:
+        '200':
+          description: Successfully retrieved animals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Animal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+  /api/zoo/{id}/reviews:
+    get:
+      tags:
+        - Zoo
+        - Review
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the zoo
+      summary: Get reviews about a zoo 
+      description: Retrieve all reviews about a zoo with a given id
+      responses:
+        '200':
+          description: Successfully retrieved reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
 
 components:
   schemas:

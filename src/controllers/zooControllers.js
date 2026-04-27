@@ -1,4 +1,4 @@
-import { createZoo, deleteZoo, getAllZoos, getZooById, updateZoo } from "../services/zooServices.js";
+import { createZoo, deleteZoo, getAllZoos, getAnimalsOwnedByZoo, getReviewsAboutZoo, getZooById, updateZoo } from "../services/zooServices.js";
 
 export async function getAllZoosHandler(req, res) {
     const zoos = await getAllZoos();
@@ -57,4 +57,16 @@ export async function deleteZooHandler(req, res) {
     await deleteZoo(id);
 
     res.status(204).json({message:'Zoo was successfully deleted.'});
+}
+
+export async function getAnimalsOwnedByZooHandler(req, res) {
+    const id = parseInt(req.params.id);
+    const animals = await getAnimalsOwnedByZoo(id);
+    res.status(200).json(animals);
+}
+
+export async function getReviewsAboutZooHandler(req, res) {
+    const id = parseInt(req.params.id);
+    const reviews = getReviewsAboutZoo(id);
+    res.status(200).json(reviews);
 }
