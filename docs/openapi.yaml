@@ -594,7 +594,163 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimitHit'
 
+  /api/animal/:
+    get:
+      tags:
+        - Animal
+      security:
+        - bearerAuth: []
+      summary: Get all animals
+      description: Retrieve all animals
+      responses:
+        '200':
+          description: Successfully retrieved all animals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Animal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    post:
+      tags:
+        - Animal
+      security:
+        - bearerAuth: []
+      summary: Create a animal
+      description: Create a animal with the provided data
+      requestBody:
+        required: true
+        description: The data to create the animal from
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Animal'
+      responses:
+        '201':
+          description: Successfully created a animal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Animal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidAnimalInput'
+        '409':
+          $ref: '#/components/responses/AnimalConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
       
+  /api/animal/{id}:
+    get:
+      tags:
+        - Animal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the animal to get
+      summary: Get a animal by id
+      description: Retrieve a animal by the id provided
+      responses:
+        '200':
+          description: Successfully retrieved animal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Animal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    put:
+      tags:
+        - Animal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the animal to update
+      requestBody:
+        required: true
+        description: The data to update the animal
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Animal'
+      responses:
+        '200':
+          description: Successfully updated animal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Animal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          $ref: '#/components/responses/InvalidAnimalInput'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/AnimalConflict'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
+    delete:
+      tags:
+        - Animal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The id of the animal to delete
+      responses:
+        '204':
+          description: Successfully deleted a animal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Animal was successfully deleted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/NotPermitted'
+        '400':
+          $ref: '#/components/responses/InvalidId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitHit'
+
 components:
   schemas:
     Zoo:
@@ -834,6 +990,34 @@ components:
                 type: string
             example:
               error: 'Conflict: Owner already has a review for this zoo'
+
+    InvalidAnimalInput:
+      description: Bad request due to invalid data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+            example:
+              errors:
+                - "Field 'nickname' is missing"
+                - "Field 'species' is missing"
+
+    AnimalConflict:
+      description: Animal creation/updating had conflicts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            example:
+              error: 'Conflict: An animal with this nickname and species already exists at this zoo'
 
   securitySchemes:
     bearerAuth:
