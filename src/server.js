@@ -2,7 +2,8 @@ import express from 'express';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import swaggerUi from 'swagger-ui-express';
-import morgan from 'morgan'
+import morgan from 'morgan';
+import cors from "cors";
 
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -13,7 +14,7 @@ import { rateLimiter } from './middleware/rateLimit.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(cors);
 app.use(express.json());
 app.use(morgan('tiny'));
 

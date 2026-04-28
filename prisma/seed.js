@@ -139,7 +139,7 @@ try {
 
         console.log('Database seeded successfully!');
     } else {
-        console.log('Database already contains data. Skipping user seed.');
+        console.log('Database already contains data. Skipping seed.');
     }
 
 
