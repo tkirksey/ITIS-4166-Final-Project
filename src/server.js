@@ -15,7 +15,6 @@ import { rateLimiter } from './middleware/rateLimit.js';
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
 
 app.use(cors);
 app.use(express.json());
@@ -55,6 +54,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, HOST, () => {
-    console.log(`Listening on ${HOST}:${PORT}...`);
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}...`);
 });
