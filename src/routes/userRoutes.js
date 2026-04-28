@@ -11,16 +11,17 @@ import {
     getZoosOwnedByUserHandler, 
     updateUserHandler
 } from "../controllers/userControllers.js";
+import { rateLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
-router.get('/', authenticate, authorizeRoles('ADMIN'), getAllUsersHandler);
-router.get('/:id', authenticate, authorizeRoles('ADMIN'), validateId, getUserByIdHandler);
-router.post('/', authenticate, authorizeRoles('ADMIN'), validateUserPost, createUserHandler);
-router.put('/:id', authenticate, authorizeRoles('ADMIN'), validateId, validateUserUpdate, updateUserHandler);
-router.delete('/:id', authenticate, authorizeRoles('ADMIN'), validateId, deleteUserByIdHandler);
+router.get('/', rateLimiter, authenticate, authorizeRoles('ADMIN'), getAllUsersHandler);
+router.get('/:id', rateLimiter, authenticate, authorizeRoles('ADMIN'), validateId, getUserByIdHandler);
+router.post('/', rateLimiter, authenticate, authorizeRoles('ADMIN'), validateUserPost, createUserHandler);
+router.put('/:id', rateLimiter, authenticate, authorizeRoles('ADMIN'), validateId, validateUserUpdate, updateUserHandler);
+router.delete('/:id', rateLimiter, authenticate, authorizeRoles('ADMIN'), validateId, deleteUserByIdHandler);
 
-router.get('/:id/zoos', authenticate, validateId, getZoosOwnedByUserHandler);
-router.get('/:id/reviews', authenticate, validateId, getReviewsAuthoredByUserHandler);
+router.get('/:id/zoos', rateLimiter, authenticate, validateId, getZoosOwnedByUserHandler);
+router.get('/:id/reviews', rateLimiter, authenticate, validateId, getReviewsAuthoredByUserHandler);
 
 export default router;

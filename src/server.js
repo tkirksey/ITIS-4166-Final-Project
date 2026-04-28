@@ -1,22 +1,19 @@
+import cors from "cors";
 import express from 'express';
 import fs from 'fs';
-import yaml from 'js-yaml';
-import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
-import cors from "cors";
+import swaggerUi from 'swagger-ui-express';
+import yaml from 'js-yaml';
 
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import zooRouter from './routes/zooRoutes.js';
 import animalRouter from './routes/animalRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
-import { rateLimiter } from './middleware/rateLimit.js';
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
-
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
 
@@ -29,12 +26,9 @@ try {
 }
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
 app.get('/health', (req, res) => {
     res.status(200).json({status: 'ok'});
 });
-
-app.use(rateLimiter);
 
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
@@ -54,6 +48,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(process.env.PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
 });

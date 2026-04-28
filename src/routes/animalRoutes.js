@@ -22,12 +22,16 @@ import {
     authorizeAnimalOwnership
 } from "../middleware/authorizeOwnership.js";
 
+import {
+    rateLimiter
+} from '../middleware/rateLimit.js';
+
 const router = express.Router();
 
-router.get('/', authenticate, getAllAnimalsHandler);
-router.get('/:id', authenticate, validateId, getAnimalByIdHandler);
-router.post('/', authenticate, validateCreateData, createAnimalHandler);
-router.put('/:id', authenticate, validateId, authorizeAnimalOwnership, validateUpdateData, updateAnimalHandler);
-router.delete('/:id', authenticate, validateId, authorizeAnimalOwnership, deleteAnimalHandler);
+router.get('/', rateLimiter, authenticate, getAllAnimalsHandler);
+router.get('/:id', rateLimiter, authenticate, validateId, getAnimalByIdHandler);
+router.post('/', rateLimiter, authenticate, validateCreateData, createAnimalHandler);
+router.put('/:id', rateLimiter, authenticate, validateId, authorizeAnimalOwnership, validateUpdateData, updateAnimalHandler);
+router.delete('/:id', rateLimiter, authenticate, validateId, authorizeAnimalOwnership, deleteAnimalHandler);
 
 export default router;

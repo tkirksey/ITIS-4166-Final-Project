@@ -17,13 +17,14 @@ import {
 import { authenticate } from '../middleware/authenticate.js';
 
 import { authorizeReviewOwnership } from '../middleware/authorizeOwnership.js';
+import { rateLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
-router.get('/', authenticate, getAllReviewsHandler);
-router.get('/:id', authenticate, validateId, getReviewByIdHandler);
-router.post('/', authenticate, validateCreateData, createReviewHandler);
-router.put('/:id', authenticate, validateId, authorizeReviewOwnership, validateUpdateData, updateReviewHandler);
-router.delete('/:id', authenticate, validateId, authorizeReviewOwnership, deleteReviewHandler);
+router.get('/', rateLimiter, authenticate, getAllReviewsHandler);
+router.get('/:id', rateLimiter, authenticate, validateId, getReviewByIdHandler);
+router.post('/', rateLimiter, authenticate, validateCreateData, createReviewHandler);
+router.put('/:id', rateLimiter, authenticate, validateId, authorizeReviewOwnership, validateUpdateData, updateReviewHandler);
+router.delete('/:id', rateLimiter, authenticate, validateId, authorizeReviewOwnership, deleteReviewHandler);
 
 export default router;
