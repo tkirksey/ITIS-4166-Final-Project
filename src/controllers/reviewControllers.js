@@ -20,7 +20,10 @@ export async function getReviewByIdHandler(req, res) {
 export async function createReviewHandler(req, res) {
     const rating = parseInt(req.body.rating);
     const { content } = req.body;
-    const authorId = parseInt(req.body.authorId);
+    let authorId = parseInt(req.user.id);
+    if(req.body.authorId){
+        authorId = parseInt(req.body.authorId);
+    }
     const zooId = parseInt(req.body.zooId);
     const review = await createReview(rating, content, authorId, zooId);
     res.status(201).json(review);

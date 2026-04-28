@@ -34,8 +34,7 @@ export const validateCreateData = [
     .withMessage("Field 'content' must be between 10-100 characters"),
 
     body('authorId')
-    .exists({values:'falsy'})
-    .withMessage("Field 'authorId' is missing")
+    .optional()
     .bail()
     .trim()
     .escape()
