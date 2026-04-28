@@ -28,19 +28,19 @@ try {
     process.exit(1);
 }
 
-app.use(rateLimiter);
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+app.get('/health', (req, res) => {
+    res.status(200).json({status: 'ok'});
+});
+
+app.use(rateLimiter);
 
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/zoo', zooRouter);
 app.use('/api/animal', animalRouter);
 app.use('/api/review', reviewRouter);
-
-app.get('/health', (req, res) => {
-    res.status(200).json({status: 'ok'});
-});
 
 app.use((req, res, next) => {
     res.status(404).json({ error: 'Not found' });
