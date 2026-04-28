@@ -56,5 +56,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, HOST, () => {
-    console.log(`Listening on port ${PORT}...`);
+    console.log(`Listening on ${HOST}:${PORT}...`);
 });
